@@ -114,3 +114,22 @@ class TodoViewTestCase(TestCase):
         response = client.get('/1/')
 
         self.assertEqual(response.status_code, 404)
+
+    def test_delete_success(self):
+        task = Task(title='task1', due_at=timezone.make_aware(datetime(2024, 7, 1)))
+        task.save()
+        task_id = task.pk
+        client = Client()
+        
+        # detailにアクセス.
+        response = client.post('/{}/delete/'.format(task.pk))
+        self.assertEqual(response.status_code, 302)
+        
+        # task1は削除ずみ.
+        task = Task.objects.filter(pk=task.pk)
+        self.assertEqual(len(task), 0)
+        
+        # 削除済みのtaskにアクセス.
+        response = client.get('/{}/'.format(task_id))
+        self.assertEqual(response.status_code, 404)
+
