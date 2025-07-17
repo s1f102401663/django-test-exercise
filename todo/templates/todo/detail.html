@@ -16,6 +16,9 @@
       {% if task.due_at %}
       <li>Due at: {{ task.due_at }}</li>
       {% endif %}
+      {% if task.comment %}
+      <li>Comment: <br><div style="margin-left: 20px; white-space: pre-wrap;">{{ task.comment }}</div></li>
+      {% endif %}
       {% if task.completed %}
       <li>Status: Completed</li>
       {% else %}
@@ -23,7 +26,7 @@
       {% endif %}
     </ul>
 
-    <h2><メモ></h2>
+    <h2>〈メモ〉</h2>
     <form method="post">
         {% csrf_token %}
         <textarea name="memo" rows="5" cols="40" placeholder="課題のメモ">{{ task.memo }}</textarea><br>
