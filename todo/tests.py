@@ -133,3 +133,22 @@ class TodoViewTestCase(TestCase):
         response = client.get('/{}/'.format(task_id))
         self.assertEqual(response.status_code, 404)
 
+    # 検索機能のテスト
+    def test_search_function(self):
+        Task.objects.create(title='Apple Banana')
+        Task.objects.create(title='Banana Cherry')
+        Task.objects.create(title='Apple Orange')
+
+        client = Client()
+        response = client.get('/?q=Banana')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['tasks']), 2)
+
+        response = client.get('/?q=Orange')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['tasks']), 1)
+        self.assertEqual(response.context['tasks'][0].title, 'Apple Orange')
+
+        response = client.get('/?q=Grape')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['tasks']), 0)
