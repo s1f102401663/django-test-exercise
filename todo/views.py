@@ -17,6 +17,12 @@ def index(request):
 
     tasks = Task.objects.all()
 
+    filter_param = request.GET.get('filter')
+    if filter_param == 'complete':
+        tasks = tasks.filter(completed=True)
+    elif filter_param == 'incomplete':
+        tasks = tasks.filter(completed=False)
+
     query = request.GET.get('q')
     if query:
         tasks = tasks.filter(title__icontains=query)
@@ -69,11 +75,11 @@ def delete(request, task_id):
     task.delete()
     return redirect(index)
 
-def close(request, task_id):
+def complete(request, task_id):
     try:
         task = Task.objects.get(pk=task_id)
     except Task.DoesNotExist:
         raise Http404("Task does not exist")
-    task.completed = True
+    task.completed = not task.completed
     task.save()
     return redirect(index)
