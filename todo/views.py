@@ -44,6 +44,11 @@ def detail(request, task_id):
     except Task.DoesNotExist:
         raise Http404("Task does not exist")
     
+    if request.method == 'POST':
+        task.memo = request.POST.get('memo', '')
+        task.save()
+        return redirect('detail', task_id=task.id)
+
     context = {
         'task': task
     }
