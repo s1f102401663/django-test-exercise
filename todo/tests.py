@@ -152,3 +152,34 @@ class TodoViewTestCase(TestCase):
         response = client.get('/?q=Grape')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['tasks']), 0)
+
+    # タスクの完了・未完了切り替え機能のテスト
+    def test_complete_view(self):
+        task = Task.objects.create(title='Incomplete Task')
+        self.assertFalse(task.completed)
+        client = Client()
+        response = client.get('/{}/complete/'.format(task.pk))
+        self.assertRedirects(response, '/')
+        task.refresh_from_db()
+        self.assertTrue(task.completed, 'Task should be marked as completed')
+        response = client.get('/{}/complete/'.format(task.pk))
+        task.refresh_from_db()
+        self.assertFalse(task.completed, 'Task should be marked as not completed')
+
+    # 完了・未完了での絞り込み機能のテスト
+    def test_filter_function(self):
+        Task.objects.create(title='Task 1', completed=True)
+        Task.objects.create(title='Task 2', completed=False)
+        Task.objects.create(title='Task 3', completed=True)
+
+        client = Client()
+        response = client.get('/?filter=complete')
+        self.assertEqual(len(response.context['tasks']), 2)
+        self.assertTrue(all(task.completed for task in response.context['tasks']))
+
+        response = client.get('/?filter=incomplete')
+        self.assertEqual(len(response.context['tasks']), 1)
+        self.assertEqual(response.context['tasks'][0].title, 'Task 2')
+        self.assertFalse(any(task.completed for task in response.context['tasks']))
+        response = client.get('/')
+        self.assertEqual(len(response.context['tasks']), 3)

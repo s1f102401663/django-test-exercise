@@ -35,6 +35,12 @@
       <a href="{% url 'index' %}?order=due">Sort by Due Date</a> |
       <a href="{% url 'index' %}?order=post">Sort by Posted Date</a>
     </div>
+    <div>
+      Filter: 
+      <a href="{% url 'index' %}">All</a> |
+      <a href="{% url 'index' %}?filter=incomplete">Not complete</a> |
+      <a href="{% url 'index' %}?filter=complete">Complete</a>
+    </div>
 
     {% for task in tasks %}
     <div class="text">
@@ -45,9 +51,9 @@
         <li>Due at: {{ task.due_at }}</li>
         {% endif %}
         {% if task.completed %} 
-        <li>Status: Completed</li>
+        <li>Status: Completed [<a href="{% url 'complete' task.id %}">Undo</a>]</li>
         {% else %}
-        <li>Status: Not Completed</li>
+        <li>Status: Not Completed [<a href="{% url 'complete' task.id %}">Complete</a>]</li>
         {% endif %}
       </ul>
     </div>
