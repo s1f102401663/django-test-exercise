@@ -9,6 +9,7 @@ class Task(models.Model):
     posted_at = models.DateTimeField(default=timezone.now)
     due_at = models.DateTimeField(null=True, blank=True)
     memo = models.TextField(blank=True)
+    comment = models.TextField(blank=True, null=True)
 
     def is_overdue(self, dt):
         if self.due_at is None:

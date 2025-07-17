@@ -15,11 +15,15 @@
       {% csrf_token %}
       <div>
         <label for="titleInput">Title</label><br>
-        <input id="titleInput" name="title" type="text" placeholder="Input title">
+        <input id="titleInput" name="title" type="text" placeholder="Input title" required>
       </div>
       <div>
         <label for="dueInput">Due at:</label><br>
         <input id="dueInput" name="due_at" type="datetime-local">
+      </div>
+      <div>
+        <label for="commentInput">Comment</label><br>
+        <textarea id="commentInput" name="comment" rows="3" placeholder="Add a comment..."></textarea>
       </div>
       <div>
         <button type="submit">Submit</button>
@@ -28,27 +32,34 @@
     <br>
 
     <form action="{% url 'index' %}" method="get">
+      <input type="hidden" name="filter" value="{{ request.GET.filter | default:'' }}">
+      <input type="hidden" name="order" value="{{ request.GET.order | default:'' }}">
       <input type="text" name="q" placeholder="Search tasks...">
       <button type="submit">Search</button>
     </form>
     <div>
-      <a href="{% url 'index' %}?order=due">Sort by Due Date</a> |
-      <a href="{% url 'index' %}?order=post">Sort by Posted Date</a>
+      Sort: 
+      <a href="{% url 'index' %}?order=due&filter={{ request.GET.filter | default:'' }}&q={{ request.GET.q | default:'' }}">By Due Date</a> |
+      <a href="{% url 'index' %}?order=post&filter={{ request.GET.filter | default:'' }}&q={{ request.GET.q | default:'' }}">By Posted Date</a>
     </div>
     <div>
       Filter: 
-      <a href="{% url 'index' %}">All</a> |
-      <a href="{% url 'index' %}?filter=incomplete">Not complete</a> |
-      <a href="{% url 'index' %}?filter=complete">Complete</a>
+      <a href="{% url 'index' %}?filter=&order={{ request.GET.order | default:'' }}&q={{ request.GET.q | default:'' }}">All</a> |
+      <a href="{% url 'index' %}?filter=incomplete&order={{ request.GET.order | default:'' }}&q={{ request.GET.q | default:'' }}">Not complete</a> |
+      <a href="{% url 'index' %}?filter=complete&order={{ request.GET.order | default:'' }}&q={{ request.GET.q | default:'' }}">Complete</a>
     </div>
 
     {% for task in tasks %}
-    <div class="text">
+    <div class="text {% if task.completed %}completed-task{% endif %}">
       <h2><a href="{% url 'detail' task.id %}">{{ task.title }}</a></h2>
       <ul>
-        <li>Posted at: {{ task.posted_at }}</li>
+        <li>Posted at: {{ task.posted_at|date:"Y-m-d H:i" }}</li>
         {% if task.due_at %} 
-        <li>Due at: {{ task.due_at }}</li>
+        <li>Due at: {{ task.due_at|date:"Y-m-d H:i" }}</li>
+        {% endif %}
+        {% if task.comment %}
+        <!-- コメントの表示文字数変更はここ-->
+        <li>Comment: {{ task.comment|truncatechars:40 }}</li>
         {% endif %}
         {% if task.completed %} 
         <li>Status: Completed [<a href="{% url 'complete' task.id %}">Undo</a>]</li>
