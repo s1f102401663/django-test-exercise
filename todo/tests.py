@@ -66,13 +66,12 @@ class TodoViewTestCase(TestCase):
 
     def test_index_post(self):
         client = Client()
-        data = {'title': 'Test Task', 'due_at': '2024-06-30 23:59:59'}
+        data = {'title': 'Test Task', 'due_at': '2024-06-30 23:59:59', 'priority': '2', 'comment': 'これはテスト用のコメントです',}
         response = client.post('/', data)
 
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.templates[0].name, 'todo/index.html')
-        self.assertEqual(len(response.context['tasks']), 1)
-
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Task.objects.count(), 1)
+        
     def test_index_get_order_post(self):
         task1 = Task(title='task1', due_at=timezone.make_aware(datetime(2024, 7, 1)))
         task1.save()
@@ -190,7 +189,8 @@ class TodoViewTestCase(TestCase):
         comment_text = "This is a test comment."
         data = {
             'title': 'Task with comment',
-            'due_at': '',
+            'due_at': '2025-07-20T10:00:00',
+            'priority': '2',
             'comment': comment_text,
         }
         response = client.post('/', data, follow=True)
