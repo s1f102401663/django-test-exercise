@@ -20,19 +20,36 @@
     </form>
     <br>
 
+    <form action="{% url 'index' %}" method="get">
+      <input type="hidden" name="filter" value="{{ request.GET.filter | default:'' }}">
+      <input type="hidden" name="order" value="{{ request.GET.order | default:'' }}">
+      <input type="text" name="q" placeholder="Search tasks...">
+      <button type="submit">Search</button>
+    </form>
     <div>
-      <a href="{% url 'index' %}?order=due">Sort by Due Date</a> |
-      <a href="{% url 'index' %}?order=post">Sort by Posted Date</a> |
-      <a href="{% url 'index' %}?order=priority">Sort by Priority</a>
+      Sort: 
+      <a href="{% url 'index' %}?order=due&filter={{ request.GET.filter | default:'' }}&q={{ request.GET.q | default:'' }}">By Due Date</a> |
+      <a href="{% url 'index' %}?order=post&filter={{ request.GET.filter | default:'' }}&q={{ request.GET.q | default:'' }}">By Posted Date</a>
+      <a href="{% url 'index' %}?order=priority&filter={{ request.GET.filter | default:'' }}&q={{ request.GET.q | default:'' }}">By Priority</a>
+    </div>
+    <div>
+      Filter: 
+      <a href="{% url 'index' %}?filter=&order={{ request.GET.order | default:'' }}&q={{ request.GET.q | default:'' }}">All</a> |
+      <a href="{% url 'index' %}?filter=incomplete&order={{ request.GET.order | default:'' }}&q={{ request.GET.q | default:'' }}">Not complete</a> |
+      <a href="{% url 'index' %}?filter=complete&order={{ request.GET.order | default:'' }}&q={{ request.GET.q | default:'' }}">Complete</a>
     </div>
 
     {% for task in tasks %}
-    <div class="text">
+    <div class="text {% if task.completed %}completed-task{% endif %}">
       <h2><a href="{% url 'detail' task.id %}">{{ task.title }}</a></h2>
       <ul>
-        <li>Posted at: {{ task.posted_at }}</li>
+        <li>Posted at: {{ task.posted_at|date:"Y-m-d H:i" }}</li>
         {% if task.due_at %} 
-        <li>Due at: {{ task.due_at }}</li>
+        <li>Due at: {{ task.due_at|date:"Y-m-d H:i" }}</li>
+        {% endif %}
+        {% if task.comment %}
+        <!-- コメントの表示文字数変更はここ-->
+        <li>Comment: {{ task.comment|truncatechars:40 }}</li>
         {% endif %}
         <li>
             Priority:
@@ -45,9 +62,9 @@
             {% endif %}
         </li>
         {% if task.completed %} 
-        <li>Status: Completed</li>
+        <li>Status: Completed [<a href="{% url 'complete' task.id %}">Undo</a>]</li>
         {% else %}
-        <li>Status: Not Completed</li>
+        <li>Status: Not Completed [<a href="{% url 'complete' task.id %}">Complete</a>]</li>
         {% endif %}
       </ul>
     </div>

@@ -6,6 +6,7 @@
     <title>To Do Application</title>
     <meta charset="UTF-8">
     <meta name="author" content="INIAD">
+    <link rel="stylesheet" href="{% static 'todo/css/edit.css' %}">
   </head>
 
   <body>
@@ -25,6 +26,9 @@
               <span class="low-priority">低</span>
           {% endif %}
       </li>
+      {% if task.comment %}
+      <li>Comment: <br><div style="margin-left: 20px; white-space: pre-wrap;">{{ task.comment }}</div></li>
+      {% endif %}
       {% if task.completed %}
       <li>Status: Completed</li>
       {% else %}
@@ -32,11 +36,22 @@
       {% endif %}
     </ul>
 
+    <h2>〈メモ〉</h2>
+    <form method="post">
+        {% csrf_token %}
+        <textarea name="memo" rows="5" cols="40" placeholder="課題のメモ">{{ task.memo }}</textarea><br>
+        <button type="submit">保存</button>
+    </form>
+
     <div>
       <a href="{% url 'index' %}">Top</a>
       | <a href="{% url 'update' task.id %}">Edit</a>
       | <a href="{% url 'delete' task.id %}">Delete</a>
-      | <a href="{% url 'close' task.id %}">Close</a>
+      | {% if task.completed %}
+          <a href="{% url 'complete' task.id %}">Mark as Not Completed</a>
+        {% else %}
+          <a href="{% url 'complete' task.id %}">Mark as Completed</a>
+        {% endif %}
     </div>
   </body>
 

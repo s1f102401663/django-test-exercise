@@ -1,0 +1,81 @@
+/* 全体背景とベースフォント */
+body {
+    background: #fafaff;
+    color: #222;
+    font-family: "Segoe UI", "Meiryo", sans-serif;
+    margin: 0;
+    padding: 30px;
+}
+
+/* 課題タイトル */
+h1 {
+    color: #3178d9;
+    border-bottom: 2px solid #abc4e2;
+    padding-bottom: 5px;
+    margin-top: 0;
+}
+
+h2 {
+    color: #3178d9; 
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+/* メモ入力フォーム */
+form {
+    background: #f7f8fd;
+    padding: 15px 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    border-radius: 8px;
+    max-width: 500px;
+     margin-top: 0;
+    margin-bottom: 30px;
+}
+
+/* テキストエリア */
+textarea[name="memo"] {
+    width: 100%;
+    min-height: 100px;
+    font-size: 15px;
+    border: 1px solid #abc4e2;
+    border-radius: 4px;
+    padding: 8px;
+    background: #fff;
+    resize: vertical;
+}
+
+button[type="submit"] {
+    background: #3178d9;
+    color: #fff;
+    border: none;
+    padding: 6px 18px;
+    font-size: 15px;
+    border-radius: 4px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+button[type="submit"]:hover {
+    background: #2358a4;
+}
+
+/* リンク */
+a {
+    color: #3178d9;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* リスト装飾 */
+ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+ul li {
+    margin-bottom: 5px;
+}

@@ -16,9 +16,11 @@ class Task(models.Model):
     priority = models.CharField(
         max_length=10,
         choices=PRIORITY_CHOICES,
-        default='medium', # デフォルト値を設定 (例: '中' をデフォルトにする)
+        default='medium',
     )
-    
+    memo = models.TextField(blank=True)
+    comment = models.TextField(blank=True, null=True)
+
     def is_overdue(self, dt):
         if self.due_at is None:
             return False
