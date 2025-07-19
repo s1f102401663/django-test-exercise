@@ -5,12 +5,8 @@
   <head>
     <title>To Do Application</title>
     <meta charset="UTF-8">
-<<<<<<< HEAD
     <meta name="author" content="INIAD"> 
-=======
-    <meta name="author" content="INIAD">
     <link rel="stylesheet" href="{% static 'todo/css/index.css' %}">
->>>>>>> main
   </head>
 
   <body>
@@ -67,9 +63,9 @@
         {% endif %}
         <li>
             Priority:
-            {% if task.priority == 'high' %}
+            {% if task.priority == '3' %}
                 <span class="high-priority">高</span>
-            {% elif task.priority == 'medium' %}
+            {% elif task.priority == '2' %}
                 <span class="medium-priority">中</span>
             {% else %}
                 <span class="low-priority">低</span>

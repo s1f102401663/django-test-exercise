@@ -20,11 +20,11 @@
       {% endif %}
       <li>
           Priority:
-          {% if task.priority == 'high' %}
+          {% if task.priority == '3' %}
               <span class="high-priority">高</span>
-          {% elif task.priority == 'medium' %}
+          {% elif task.priority == '2' %}
               <span class="medium-priority">中</span>
-          {% else %} {# task.priority == 'low' #}
+          {% else %}
               <span class="low-priority">低</span>
           {% endif %}
       </li>

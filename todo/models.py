@@ -5,9 +5,9 @@ from django.utils import timezone
 # Create your models here.
 class Task(models.Model):
     PRIORITY_CHOICES = [
-        ('low', '低'),
-        ('medium', '中'),
-        ('high', '高'),
+        ('1', '低'),
+        ('2', '中'),
+        ('3', '高'),
     ]
     title = models.CharField(max_length=100)
     completed = models.BooleanField(default=False)
@@ -16,7 +16,7 @@ class Task(models.Model):
     priority = models.CharField(
         max_length=10,
         choices=PRIORITY_CHOICES,
-        default='medium',
+        default='2',
     )
     memo = models.TextField(blank=True)
     comment = models.TextField(blank=True, null=True)
