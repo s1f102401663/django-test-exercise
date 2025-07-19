@@ -10,6 +10,7 @@
   </head>
 
   <body>
+    <div id="display">
     <h1>{{ task.title }}</h1>
     <ul>
       <li>Posted at: {{ task.posted_at }}</li>
@@ -22,6 +23,7 @@
       <li>Status: Not Completed</li>
       {% endif %}
     </ul>
+    </div>
 
     <div class="links">
       <a href="{% url 'index' %}">Top</a>
