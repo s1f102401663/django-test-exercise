@@ -18,6 +18,16 @@
       {% if task.due_at %}
       <li>Due at: {{ task.due_at }}</li>
       {% endif %}
+      <li>
+          Priority:
+          {% if task.priority == '3' %}
+              <span class="high-priority">高</span>
+          {% elif task.priority == '2' %}
+              <span class="medium-priority">中</span>
+          {% else %}
+              <span class="low-priority">低</span>
+          {% endif %}
+      </li>
       {% if task.comment %}
       <li>Comment: <br><div style="margin-left: 20px; white-space: pre-wrap;">{{ task.comment }}</div></li>
       {% endif %}

@@ -14,14 +14,7 @@
     <p>You can edit tasks from the following form.</p>
     <form action="{% url 'update' task.id%}" method="post">
       {% csrf_token %}
-      <div>
-        <label for="titleInput">Title</label><br>
-        <input id="titleInput" name="title" type="text" placeholder="Input title" value="{{ task.title }}">
-      </div>
-      <div>
-        <label for="dueInput">Due at:</label><br>
-        <input id="dueInput" name="due_at" type="datetime-local" value="{{ task.due_at |date:"Y-m-d H:i" }}">
-      </div>
+      {{ form.as_p }}
       <div>
         <label for="commentInput">Comment</label><br>
         <textarea id="commentInput" name="comment" rows="3">{{ task.comment|default_if_none:'' }}</textarea>
