@@ -11,17 +11,25 @@ def index(request):
         due = make_aware(parse_datetime(request.POST["due_at"])) if request.POST["due_at"] else None
         task = Task(
             title=request.POST["title"],
+            comment=request.POST.get('comment', ''),
             due_at=due
         )
         task.save()
 
     tasks = Task.objects.all()
 
+    filter_param = request.GET.get('filter')
+    if filter_param == 'complete':
+        tasks = tasks.filter(completed=True)
+    elif filter_param == 'incomplete':
+        tasks = tasks.filter(completed=False)
+
     query = request.GET.get('q')
     if query:
         tasks = tasks.filter(title__icontains=query)
 
-    if request.GET.get('order') == 'due':
+    order_param = request.GET.get('order')
+    if order_param == 'due':
         tasks = tasks.order_by('due_at')
     else:
         tasks = tasks.order_by('-posted_at')
@@ -38,6 +46,11 @@ def detail(request, task_id):
     except Task.DoesNotExist:
         raise Http404("Task does not exist")
     
+    if request.method == 'POST':
+        task.memo = request.POST.get('memo', '')
+        task.save()
+        return redirect('detail', task_id=task.id)
+
     context = {
         'task': task
     }
@@ -52,6 +65,7 @@ def update(request, task_id):
     if request.method == 'POST':
         task.title = request.POST['title']
         task.due_at = make_aware(parse_datetime(request.POST['due_at']))
+        task.comment = request.POST.get('comment', '')
         task.save()
         return redirect(detail, task_id)
 
@@ -67,4 +81,13 @@ def delete(request, task_id):
         raise Http404("Task does not exist")
 
     task.delete()
+    return redirect(index)
+
+def complete(request, task_id):
+    try:
+        task = Task.objects.get(pk=task_id)
+    except Task.DoesNotExist:
+        raise Http404("Task does not exist")
+    task.completed = not task.completed
+    task.save()
     return redirect(index)

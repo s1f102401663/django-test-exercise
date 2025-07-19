@@ -152,3 +152,69 @@ class TodoViewTestCase(TestCase):
         response = client.get('/?q=Grape')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['tasks']), 0)
+
+    # タスクの完了・未完了切り替え機能のテスト
+    def test_complete_view(self):
+        task = Task.objects.create(title='Incomplete Task')
+        self.assertFalse(task.completed)
+        client = Client()
+        response = client.get('/{}/complete/'.format(task.pk))
+        self.assertRedirects(response, '/')
+        task.refresh_from_db()
+        self.assertTrue(task.completed, 'Task should be marked as completed')
+        response = client.get('/{}/complete/'.format(task.pk))
+        task.refresh_from_db()
+        self.assertFalse(task.completed, 'Task should be marked as not completed')
+
+    # 完了・未完了での絞り込み機能のテスト
+    def test_filter_function(self):
+        Task.objects.create(title='Task 1', completed=True)
+        Task.objects.create(title='Task 2', completed=False)
+        Task.objects.create(title='Task 3', completed=True)
+
+        client = Client()
+        response = client.get('/?filter=complete')
+        self.assertEqual(len(response.context['tasks']), 2)
+        self.assertTrue(all(task.completed for task in response.context['tasks']))
+
+        response = client.get('/?filter=incomplete')
+        self.assertEqual(len(response.context['tasks']), 1)
+        self.assertEqual(response.context['tasks'][0].title, 'Task 2')
+        self.assertFalse(any(task.completed for task in response.context['tasks']))
+        response = client.get('/')
+        self.assertEqual(len(response.context['tasks']), 3)
+    
+    # コメント機能のテスト
+    def test_comment_creation_and_display(self):
+        client = Client()
+        comment_text = "This is a test comment."
+        data = {
+            'title': 'Task with comment',
+            'due_at': '',
+            'comment': comment_text,
+        }
+        response = client.post('/', data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        created_task = Task.objects.get(title='Task with comment')
+        self.assertEqual(created_task.comment, comment_text)
+        response = client.get('/{}/'.format(created_task.pk))
+        self.assertContains(response, comment_text)
+        long_comment = "This is a very long comment to test the truncatechars filter in the index page."
+        Task.objects.create(title='Long comment task', comment=long_comment)
+        response = client.get('/')
+        self.assertContains(response, '…') 
+        self.assertNotContains(response, long_comment)
+
+    # 絞り込みとソートの組み合わせ機能のテスト
+    def test_filter_and_sort_combination(self):
+        now = timezone.now()
+        Task.objects.create(title='Incomplete, due later', completed=False, due_at=now + timezone.timedelta(days=2))
+        Task.objects.create(title='Completed, due earlier', completed=True, due_at=now + timezone.timedelta(days=1))
+        Task.objects.create(title='Incomplete, due earlier', completed=False, due_at=now + timezone.timedelta(days=1))
+        client = Client()
+        response = client.get('/?filter=incomplete&order=due')
+        self.assertEqual(response.status_code, 200)
+        tasks = response.context['tasks']
+        self.assertEqual(len(tasks), 2)
+        self.assertEqual(tasks[0].title, 'Incomplete, due earlier')
+        self.assertEqual(tasks[1].title, 'Incomplete, due later')

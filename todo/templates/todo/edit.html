@@ -6,6 +6,7 @@
     <title>To Do Application</title>
     <meta charset="UTF-8">
     <meta name="author" content="INIAD">
+    <link rel="stylesheet" href="{% static 'todo/css/edit.css' %}">
   </head>
 
   <body>
@@ -20,6 +21,10 @@
       <div>
         <label for="dueInput">Due at:</label><br>
         <input id="dueInput" name="due_at" type="datetime-local" value="{{ task.due_at |date:"Y-m-d H:i" }}">
+      </div>
+      <div>
+        <label for="commentInput">Comment</label><br>
+        <textarea id="commentInput" name="comment" rows="3">{{ task.comment|default_if_none:'' }}</textarea>
       </div>
       <div>
         <button type="submit">Submit</button>
