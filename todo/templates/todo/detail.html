@@ -15,6 +15,16 @@
       {% if task.due_at %}
       <li>Due at: {{ task.due_at }}</li>
       {% endif %}
+      <li>
+          Priority:
+          {% if task.priority == 'high' %}
+              <span class="high-priority">高</span>
+          {% elif task.priority == 'medium' %}
+              <span class="medium-priority">中</span>
+          {% else %} {# task.priority == 'low' #}
+              <span class="low-priority">低</span>
+          {% endif %}
+      </li>
       {% if task.completed %}
       <li>Status: Completed</li>
       {% else %}
