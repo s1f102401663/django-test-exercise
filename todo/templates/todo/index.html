@@ -12,7 +12,7 @@
   <body>
     <h1>Sample To Do Application</h1>
     <p>You can submit tasks from the following form.</p>
-    <form action="{% url 'index' %}" method="post">
+    <form action="{% url 'index' %}" method="post" class="main-form">
       {% csrf_token %}
       {{ form.as_p }}
       <div>
@@ -22,7 +22,7 @@
     <br>
 
     <p>You can search tasks with the following form.</p>
-    <form action="{% url 'index' %}" method="get">
+    <form action="{% url 'index' %}" method="get" class="main-form">
       <div>
         <input type="hidden" name="filter" value="{{ request.GET.filter | default:'' }}">
         <input type="hidden" name="order" value="{{ request.GET.order | default:'' }}">
@@ -37,15 +37,15 @@
     <div id="div-sort">
       <div>
         Sort: 
-        <a href="{% url 'index' %}?order=due&filter={{ request.GET.filter | default:'' }}&q={{ request.GET.q | default:'' }}">By Due Date</a> |
-        <a href="{% url 'index' %}?order=post&filter={{ request.GET.filter | default:'' }}&q={{ request.GET.q | default:'' }}">By Posted Date</a>
-        <a href="{% url 'index' %}?order=priority&filter={{ request.GET.filter | default:'' }}&q={{ request.GET.q | default:'' }}">By Priority</a>
+        <a href="{% url 'index' %}?order=due&filter={{ request.GET.filter | default:'' }}&q={{ request.GET.q | default:'' }}" class="hover-a-ex">By Due Date</a> |
+        <a href="{% url 'index' %}?order=post&filter={{ request.GET.filter | default:'' }}&q={{ request.GET.q | default:'' }}" class="hover-a-ex">By Posted Date</a> |
+        <a href="{% url 'index' %}?order=priority&filter={{ request.GET.filter | default:'' }}&q={{ request.GET.q | default:'' }}" class="hover-a-ex">By Priority</a>
       </div>
       <div>
         Filter: 
-        <a href="{% url 'index' %}?filter=&order={{ request.GET.order | default:'' }}&q={{ request.GET.q | default:'' }}">All</a> |
-        <a href="{% url 'index' %}?filter=incomplete&order={{ request.GET.order | default:'' }}&q={{ request.GET.q | default:'' }}">Not complete</a> |
-        <a href="{% url 'index' %}?filter=complete&order={{ request.GET.order | default:'' }}&q={{ request.GET.q | default:'' }}">Complete</a>
+        <a href="{% url 'index' %}?filter=&order={{ request.GET.order | default:'' }}&q={{ request.GET.q | default:'' }}" class="hover-a-ex">All</a> |
+        <a href="{% url 'index' %}?filter=incomplete&order={{ request.GET.order | default:'' }}&q={{ request.GET.q | default:'' }}" class="hover-a-ex">Not complete</a> |
+        <a href="{% url 'index' %}?filter=complete&order={{ request.GET.order | default:'' }}&q={{ request.GET.q | default:'' }}" class="hover-a-ex">Complete</a>
       </div>
     </div>
 
@@ -71,11 +71,22 @@
                 <span class="low-priority">低</span>
             {% endif %}
         </li>
-        {% if task.completed %} 
-        <li>Status: Completed [<a href="{% url 'complete' task.id %}">Undo</a>]</li>
+        <li>
+        Status: 
+        {% if task.completed %}
+          Completed
+          <form action="{% url 'complete' task.id %}" method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit">Undo</button>
+          </form>
         {% else %}
-        <li>Status: Not Completed [<a href="{% url 'complete' task.id %}">Complete</a>]</li>
+          Not Completed
+          <form action="{% url 'complete' task.id %}" method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit">Complete</button>
+          </form>
         {% endif %}
+      </li>
       </ul>
     </div>
     {% endfor %}

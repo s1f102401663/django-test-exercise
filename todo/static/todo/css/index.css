@@ -16,14 +16,14 @@ p {
     font-size: large;
 }
 
-form {
+.main-form {
     background-color: #ffffff;
     padding: 5px;
     border: 1px solid #404040;
     border-radius: 4px;
 }
 
-form > div {
+.main-form > div {
     display: block;
     padding: 5px;
     margin: 5px
@@ -47,6 +47,22 @@ a {
 a:hover {
     background-color: #00ffff;
     color: blue;
+    position: relative;
+    z-index: 1;
+}
+
+.hover-a-ex {
+    padding: 6px;
+    margin: 12px;
+    border-radius: 8px;
+    color: inherit;
+}
+
+.hover-a-ex:hover {
+    background-color: #00ffff;
+    color: blue;
+    position: relative;
+    z-index: 1;
 }
 
 .text {

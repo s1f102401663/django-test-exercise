@@ -40,22 +40,33 @@
     </div>
 
     <h2>〈メモ〉</h2>
-    <form method="post">
+    <form method="post" class="main-form">
         {% csrf_token %}
         <div>
           <textarea name="memo" rows="5" cols="40" placeholder="課題のメモ">{{ task.memo }}</textarea><br>
-          <button type="submit">保存</button>
+          <button type="submit" class="form-button">保存</button>
         </div>
     </form>
 
     <div class="links">
       <a href="{% url 'index' %}">Top</a>
       | <a href="{% url 'update' task.id %}">Edit</a>
-      | <a href="{% url 'delete' task.id %}">Delete</a>
+      | <form action="{% url 'delete' task.id %}" method="post" style="display: inline;" onsubmit="return confirm('本当に削除しますか？');">
+          {% csrf_token %}
+          <button type="submit" class="before-button">Delete</button>
+        </form>
+
+      <!-- Complete/Undoリンクをフォームに変更 -->
       | {% if task.completed %}
-          <a href="{% url 'complete' task.id %}">Mark as Not Completed</a>
+          <form action="{% url 'complete' task.id %}" method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="before-button">Mark as Not Completed</button>
+          </form>
         {% else %}
-          <a href="{% url 'complete' task.id %}">Mark as Completed</a>
+          <form action="{% url 'complete' task.id %}" method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="before-button">Mark as Completed</button>
+          </form>
         {% endif %}
     </div>
   </body>

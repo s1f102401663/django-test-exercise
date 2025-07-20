@@ -22,7 +22,7 @@ h2 {
 }
 
 /* メモ入力フォーム */
-form {
+.main-form {
     background: #f7f8fd;
     padding: 15px 20px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.03);
@@ -44,7 +44,7 @@ textarea[name="memo"] {
     resize: vertical;
 }
 
-button[type="submit"] {
+.form-button[type="submit"] {
     background: #3178d9;
     color: #fff;
     border: none;
@@ -56,7 +56,7 @@ button[type="submit"] {
     transition: background 0.2s;
 }
 
-button[type="submit"]:hover {
+.form-button[type="submit"]:hover {
     background: #2358a4;
 }
 

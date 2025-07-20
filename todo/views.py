@@ -1,7 +1,4 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import Http404
-from django.utils.timezone import make_aware
-from django.utils.dateparse import parse_datetime
 from todo.models import Task
 from .forms import TaskForm
 
@@ -43,10 +40,7 @@ def index(request):
 
 
 def detail(request, task_id):
-    try:
-        task = Task.objects.get(pk=task_id)
-    except Task.DoesNotExist:
-        raise Http404("Task does not exist")
+    task = get_object_or_404(Task, pk=task_id)
     
     if request.method == 'POST':
         task.memo = request.POST.get('memo', '')
@@ -76,12 +70,14 @@ def update(request, task_id):
     return render(request, "todo/edit.html", context)
 
 def delete(request, task_id):
-    task = get_object_or_404(Task, pk=task_id) 
-    task.delete()
-    return redirect(index)
+    if request.method == 'POST':
+        task = get_object_or_404(Task, pk=task_id) 
+        task.delete()
+    return redirect('index')
 
 def complete(request, task_id):
-    task = get_object_or_404(Task, pk=task_id)
-    task.completed = not task.completed
-    task.save()
-    return redirect('index')
+    if request.method == 'POST':
+        task = get_object_or_404(Task, pk=task_id)
+        task.completed = not task.completed
+        task.save()
+    return redirect(request.META.get('HTTP_REFERER', 'index'))
